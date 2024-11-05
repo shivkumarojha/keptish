@@ -3,9 +3,18 @@
   "version": "1.0.0",
   "description": "Backend for keptish project: an ultrafast Note taking application , built with React Node js and Prisma",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
+    "dev": "tsx watch src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shiv kumar ojha",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "tsx": "^4.19.2"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
+  }
 }
