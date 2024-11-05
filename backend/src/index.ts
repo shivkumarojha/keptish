@@ -1,16 +1,26 @@
+import "dotenv/config"
 import express from "express"
+
+// Importing routers
+import userRouter from "./routers/users.router"
+import taskRouter from "./routers/tasks.router"
+import notesRouter from "./routers/notes.router"
+import calenderRouter from "./routers/calender.router"
 const app = express()
 
 
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "Yes here it is"
-    })
-})
-
+// Health route
 app.get("/health", (req, res) => {
     res.send("Up and always up")
 })
-app.listen(3000, () => {
-    console.log("Server is running at port ", 3000)
+
+// Routers
+app.use("/api/v1/user/", userRouter)
+app.use("/api/v1/notes/", notesRouter)
+app.use("/api/v1/tasks/", taskRouter)
+app.use("/api/v1/calender/", calenderRouter)
+
+
+app.listen(process.env.PORT, () => {
+    console.log("Server is running at port ", process.env.PORT)
 })
