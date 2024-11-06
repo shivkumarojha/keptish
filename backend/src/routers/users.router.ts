@@ -1,5 +1,6 @@
 import express from "express"
 import { changePassword, signin, signup } from "../controllers/user.controller"
+import authMiddleware from "../middlewares/auth.middleware"
 
 const router = express.Router()
 
@@ -10,9 +11,9 @@ router.get("/", (req, res) => {
 })
 
 
-router.post("/sigin", signin)
-router.post("/sigup", signup)
-router.post("/change-password", changePassword)
+router.post("/signin", signin)
+router.post("/signup", signup)
+router.post("/change-password", authMiddleware, changePassword)
 
 
 export default router

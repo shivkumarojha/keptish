@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 
 // Category related routes
 const addCategory = (req: Request, res: Response) => {
-
+    return res.json({
+        message: "jheloo"
+    })
 }
 
 const deleteCategory = (req: Request, res: Response) => {

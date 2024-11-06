@@ -1,5 +1,5 @@
 import express from "express"
-import { addList, addTask, deleteList, deleteTask, getAllList, getAllTask, getPaginatedTasks, getPinnedLists, getTaskByList, pinCategory, updateList, updateTask } from "../controllers/task.controller"
+import { addList, addTask, deleteList, deleteTask, getAllList, getAllTask, getPaginatedTasks, getPinnedLists, getTaskByList, pinList, updateList, updateTask } from "../controllers/task.controller"
 
 const router = express.Router()
 
@@ -9,22 +9,9 @@ router.get("/", (req, res) => {
     })
 })
 
-// addList,
-//     pinCategory,
-//     deleteList,
-//     updateList,
-//     getAllList,
-//     getPinnedCategory,
-//     addTask,
-//     deleteTask,
-//     updateTask,
-//     getAllTask,
-//     getTaskByList,
-//     getPaginatedTasks
 
-// List related routes
 router.post("/addList", addList)
-router.post("/pinCategory", pinCategory)
+router.post("/pinCategory", pinList)
 router.delete("/deleteList", deleteList)
 router.post("/updateList", updateList)
 router.get("/getAllList", getAllList)

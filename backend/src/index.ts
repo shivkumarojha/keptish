@@ -10,6 +10,9 @@ import connectDb from "./db"
 const app = express()
 
 
+// parse body middleware
+app.use(express.json())
+
 // Health route
 app.get("/health", (req, res) => {
     res.send("Up and always up")
