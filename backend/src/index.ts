@@ -6,6 +6,7 @@ import userRouter from "./routers/users.router"
 import taskRouter from "./routers/tasks.router"
 import notesRouter from "./routers/notes.router"
 import calenderRouter from "./routers/calender.router"
+import connectDb from "./db"
 const app = express()
 
 
@@ -20,7 +21,10 @@ app.use("/api/v1/notes/", notesRouter)
 app.use("/api/v1/tasks/", taskRouter)
 app.use("/api/v1/calender/", calenderRouter)
 
+// Connect database 
+connectDb()
 
+// Start the server
 app.listen(process.env.PORT, () => {
     console.log("Server is running at port ", process.env.PORT)
 })
