@@ -3,8 +3,6 @@ import bcrypt from 'bcrypt'
 import { z } from "zod"
 import { User } from "../models/user.model"
 import jwt from 'jsonwebtoken'
-import { AuthenticatedRequest } from "../middlewares/auth.middleware"
-import { rmSync } from "fs"
 // zod User schema
 const userSchema = z.object({
     name: z.string(),
@@ -113,7 +111,7 @@ const changePasswordSchema = z.object({
     newPassword: z.string(),
     confirmNewPassword: z.string(),
 })
-const changePassword = async (req: AuthenticatedRequest, res: Response) => {
+const changePassword = async (req: Request, res: Response) => {
     const parsedData = changePasswordSchema.safeParse(req.body)
     const email = req.email
     console.log(email)

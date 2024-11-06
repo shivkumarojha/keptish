@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
 
-export interface AuthenticatedRequest extends Request {
-    email: string
-}
+// export interface AuthenticatedRequest extends Request {
+//     email: string
+// }
 
-const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
     console.log(authHeader)
     if (!authHeader) {
