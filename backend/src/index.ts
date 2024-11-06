@@ -6,6 +6,7 @@ import userRouter from "./routers/users.router"
 import taskRouter from "./routers/tasks.router"
 import notesRouter from "./routers/notes.router"
 import calenderRouter from "./routers/calender.router"
+import journalRouter from "./routers/journal.router"
 import connectDb from "./db"
 const app = express()
 
@@ -23,6 +24,7 @@ app.use("/api/v1/user/", userRouter)
 app.use("/api/v1/notes/", notesRouter)
 app.use("/api/v1/tasks/", taskRouter)
 app.use("/api/v1/calender/", calenderRouter)
+app.use("/api/v1/journal/", journalRouter)
 
 // Connect database 
 connectDb()
