@@ -19,7 +19,7 @@ router.get("/getAllCategory", authMiddleware, getAllCategory)
 // Note related
 router.post("/addNote", authMiddleware, addNote)
 router.delete("/deleteNote/:id", authMiddleware, deleteNote)
-router.put("/updateNote", authMiddleware, updateNote)
+router.put("/updateNote/:id", authMiddleware, updateNote)
 router.get("/getNote", authMiddleware, getNote)
 router.get("/getPaginatedNotes", authMiddleware, getPaginatedNotes)
 router.post("/pinNote", authMiddleware, pinNote)

@@ -164,8 +164,36 @@ const deleteNote = async (req: Request, res: Response) => {
 
 }
 
-const updateNote = (req: Request, res: Response) => {
 
+const updateNote = async (req: Request, res: Response) => {
+    const noteId = req.params.id
+    const parsedData = noteSchemaValidator.partial().safeParse(req.body)
+    try {
+        const note = await Note.findOneAndUpdate(
+            {
+                _id: noteId
+            },
+            {
+                ...parsedData.data
+            },
+            {
+                new: true
+            }
+        )
+        if (!note) {
+            return res.status(404).json({
+                message: "Note not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Note updated"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Some error occured while updating the note",
+            error: error
+        })
+    }
 }
 
 const getNote = (req: Request, res: Response) => {
