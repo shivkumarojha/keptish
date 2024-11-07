@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { taskListSchema } from "../validators/task.validator";
-import { List } from "../models/task.model";
+import { List, PinnedList } from "../models/task.model";
 
 // Routes related to lists
 const addList = async (req: Request, res: Response) => {
@@ -105,12 +105,82 @@ const getAllList = async (req: Request, res: Response) => {
     }
 }
 
-const pinList = (req: Request, res: Response) => {
+const pinList = async (req: Request, res: Response) => {
+    const listId = req.params.id
+    const userId = req.id
+    console.log(listId)
+    try {
+        const pinList = await PinnedList.findOneAndUpdate(
+            {
+                listId,
+                userId
+            },
+            {
+                listId,
+                userId
+            },
+            {
+                new: true,
+                upsert: true
+            }
+        )
+        if (!pinList) {
+            return res.status(400).json({
+                message: "Something went wrong while pinning list"
+            })
+        }
+        return res.status(200).json({
+            message: "List Pinned successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while pinnint list",
+            error
+        })
+    }
 }
 
-const getPinnedLists = (req: Request, res: Response) => {
+const getPinnedLists = async (req: Request, res: Response) => {
+    const userId = req.id
+    try {
+        const pinnedLists = await PinnedList.find({
+            userId: userId
+        })
+        return res.status(200).json({
+            message: "Pinned lists fetched",
+            pinnedLists: pinnedLists
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "something went wrong while fetching pinned List",
+            error
+        })
+    }
 }
 
+// Unpin Pinned Lists
+const unPinList = async (req: Request, res: Response) => {
+    const listId = req.params.id
+    const userId = req.id
+    try {
+        const list = await PinnedList.findOneAndDelete({ listId: listId, userId: userId })
+
+        if (!list) {
+            return res.status(404).json({
+                message: "List not found"
+            })
+        }
+        return res.status(200).json({
+            message: "List removed successfully",
+            list
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while removing list",
+            error
+        })
+    }
+}
 // Routes related to tasks
 const addTask = (req: Request, res: Response) => {
 }
@@ -134,6 +204,7 @@ const getPaginatedTasks = (req: Request, res: Response) => {
 export {
     addList,
     pinList,
+    unPinList,
     deleteList,
     updateList,
     getAllList,

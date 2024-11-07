@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const listSchema = new mongoose.Schema(
     {
@@ -13,6 +13,18 @@ const listSchema = new mongoose.Schema(
         }
     }
 )
+const pinnedListSchema = new mongoose.Schema({
+    listId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'List',
+        required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+})
 const taskSchema = new mongoose.Schema(
     {
         title: {
@@ -28,5 +40,8 @@ const taskSchema = new mongoose.Schema(
     }
 )
 
+
+
 export const List = mongoose.model('List', listSchema)
 export const Task = mongoose.model('Task', taskSchema)
+export const PinnedList = mongoose.model('PinnedList', pinnedListSchema)
