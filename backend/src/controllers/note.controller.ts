@@ -32,7 +32,26 @@ const addCategory = async (req: Request, res: Response) => {
         })
     }
 }
-const deleteCategory = (req: Request, res: Response) => {
+const deleteCategory = async (req: Request, res: Response) => {
+    const categoryId: string = req.params.id
+    try {
+        const category = await Category.findOneAndDelete({
+            _id: categoryId
+        })
+        if (!category) {
+            return res.status(400).json({
+                message: "Category doesn't exist"
+            })
+        }
+        return res.status(200).json({
+            message: "Category deleted succesfully"
+        })
+    } catch (error) {
+        return res.status(422).json({
+            message: "Something went wrong while deleting category",
+            error: error
+        })
+    }
 
 }
 
