@@ -41,7 +41,20 @@ const updateCategory = (req: Request, res: Response) => {
 }
 
 const getAllCategory = async (req: Request, res: Response) => {
-    
+    const userId = req.id
+
+    try {
+        const allCategory = await Category.find({ userId })
+        return res.status(200).json({
+            message: "All categories",
+            categories: allCategory
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message: "Some error occured while fetching categories",
+            error: error
+        })
+    }
 }
 
 // Notes related route
