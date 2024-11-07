@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 router.post("/addList", authMiddleware, addList)
 router.post("/pinCategory", authMiddleware, pinList)
 router.delete("/deleteList", authMiddleware, deleteList)
-router.post("/updateList", authMiddleware, updateList)
+router.put("/updateList/:id", authMiddleware, updateList)
 router.get("/getAllList", authMiddleware, getAllList)
 router.get("/getPinnedCategory", authMiddleware, getPinnedLists)
 
