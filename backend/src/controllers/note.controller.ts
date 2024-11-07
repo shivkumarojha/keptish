@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { categorySchema } from "../validators/note.validator";
+import { categorySchemaValidator, noteSchemaValidator } from "../validators/note.validator";
 import { User } from "../models/user.model";
-import { Category } from "../models/note.model";
+import { Category, Note } from "../models/note.model";
 
 // Category related routes
 const addCategory = async (req: Request, res: Response) => {
     const userId = req.id
-    const parsedData = categorySchema.safeParse(req.body)
+    const parsedData = categorySchemaValidator.safeParse(req.body)
 
     if (!parsedData.success) {
         return res.status(400).json({
@@ -57,7 +57,7 @@ const deleteCategory = async (req: Request, res: Response) => {
 
 const updateCategory = async (req: Request, res: Response) => {
     const categoryId = req.params.id
-    const categoryName = categorySchema.safeParse(req.body)
+    const categoryName = categorySchemaValidator.safeParse(req.body)
     try {
         const updateCategory = await Category.findOneAndUpdate(
             {
@@ -69,9 +69,9 @@ const updateCategory = async (req: Request, res: Response) => {
             {
                 new: true
             }
-            
+
         )
-        if(!updateCategory) {
+        if (!updateCategory) {
             return res.status(400).json({
                 message: "Category doesn't exists"
             })
@@ -79,7 +79,7 @@ const updateCategory = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: "Category updated."
         })
-    } catch(error) {
+    } catch (error) {
         return res.status(404).json({
             message: "Some error occured while updating the category",
             error: error
@@ -105,12 +105,44 @@ const getAllCategory = async (req: Request, res: Response) => {
 }
 
 // Notes related route
-const addNote = (req: Request, res: Response) => {
+const addNote = async (req: Request, res: Response) => {
+    const parsedData = noteSchemaValidator.safeParse(req.body)
+    console.log(parsedData.data)
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Invalid values",
+            error: parsedData.error
+        })
+    }
+    const { title, description, images, categories } = parsedData.data
+    try {
+        const newNote = await Note.create({
+            title,
+            description,
+            images,
+            categories
+        })
 
+        if (!newNote) {
+            return res.status(404).json({
+                message: "Some error occured while adding new note"
+            })
+        }
+        return res.status(201).json({
+            message: "Note is created",
+            note: newNote
+        })
+
+    } catch (error) {
+        return res.status(400).json({
+            message: "Some error occured while creating note",
+            error: error
+        })
+    }
 }
 
-const deleteNote = (req: Request, res: Response) => {
-
+const deleteNote = async (req: Request, res: Response) => {
+    
 }
 
 const updateNote = (req: Request, res: Response) => {

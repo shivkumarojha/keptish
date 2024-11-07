@@ -17,12 +17,12 @@ router.put("/updateCategory/:id", authMiddleware, updateCategory)
 router.get("/getAllCategory", authMiddleware, getAllCategory)
 
 // Note related
-router.post("/addNote", addNote)
-router.delete("/deleteNote", deleteNote)
-router.put("/updateNote", updateNote)
-router.get("/getNote", getNote)
-router.get("/getPaginatedNotes", getPaginatedNotes)
-router.post("/pinNote", pinNote)
-router.get("/getPinnedNotes", getPinnedNotes)
+router.post("/addNote", authMiddleware, addNote)
+router.delete("/deleteNote/:id", authMiddleware, deleteNote)
+router.put("/updateNote", authMiddleware, updateNote)
+router.get("/getNote", authMiddleware, getNote)
+router.get("/getPaginatedNotes", authMiddleware, getPaginatedNotes)
+router.post("/pinNote", authMiddleware, pinNote)
+router.get("/getPinnedNotes", authMiddleware, getPinnedNotes)
 
 export default router
