@@ -196,7 +196,27 @@ const updateNote = async (req: Request, res: Response) => {
     }
 }
 
-const getNote = (req: Request, res: Response) => {
+const getNote = async (req: Request, res: Response) => {
+    const noteId = req.params.id
+    try{
+        const note = await Note.findOne({
+            _id: noteId
+        })
+        if(!note) {
+            return res.status(404).json({
+                message: "Note not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Notes fetched succesfully",
+            note: note
+        })
+    } catch(error) {
+        return res.status(500).json({
+            message: "Some error occured while fetching note",
+            error: error
+        })
+    }
 
 }
 
