@@ -31,6 +31,23 @@ const noteSchema = new mongoose.Schema(
     }
 )
 
+const pinnedNoteSchema = new mongoose.Schema({
+    noteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Note",
+        required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+})
 
 export const Note = mongoose.model("Note", noteSchema)
 export const Category = mongoose.model("Category", categorySchema)
+export const PinnedNote = mongoose.model("PinnedNote", pinnedNoteSchema)
