@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { taskListSchema } from "../validators/task.validator";
-import { List, PinnedList } from "../models/task.model";
+import { taskListSchema, taskSchema } from "../validators/task.validator";
+import { List, PinnedList, Task } from "../models/task.model";
 
 // Routes related to lists
 const addList = async (req: Request, res: Response) => {
@@ -182,19 +182,138 @@ const unPinList = async (req: Request, res: Response) => {
     }
 }
 // Routes related to tasks
-const addTask = (req: Request, res: Response) => {
+const addTask = async (req: Request, res: Response) => {
+    const parsedData = taskSchema.safeParse(req.body)
+    const userId = req.id
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Invalid data",
+            error: parsedData.error
+        })
+    }
+    const { title, description } = parsedData.data
+    try {
+        const task = await Task.create({
+            title,
+            description,
+            userId
+        })
+        return res.status(201).json({
+            message: "Task added successfully",
+            task
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while adding task",
+            error
+        })
+    }
 }
 
-const deleteTask = (req: Request, res: Response) => {
+const deleteTask = async (req: Request, res: Response) => {
+    const taskId = req.params.id
+    const userId = req.id
+    try {
+        const task = await Task.findOneAndDelete({ _id: taskId, userId: userId })
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Task deleted successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while deleting task",
+            error
+        })
+    }
 }
 
-const updateTask = (req: Request, res: Response) => {
+const updateTask = async (req: Request, res: Response) => {
+    const taskId = req.params.id
+    const userId = req.id
+    const parsedData = taskSchema.safeParse(req.body)
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Invalid data",
+            error: parsedData.error
+        })
+    }
+    const { title, description } = parsedData.data
+    try {
+        const task = await Task.findOneAndUpdate({ _id: taskId, userId: userId }, { title, description }, { new: true, upsert: true })
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Task updated successfully",
+            task
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while updating task",
+            error
+        })
+    }
 }
 
-const getAllTask = (req: Request, res: Response) => {
+const getAllTask = async (req: Request, res: Response) => {
+
+    try {
+        const tasks = await Task.find({ userId: req.id })
+        return res.status(200).json({
+            message: "All tasks fetched successfully",
+            tasks
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while fetching all tasks",
+            error
+        })
+    }
 }
 
-const getTaskByList = (req: Request, res: Response) => {
+const addTaskToList = async (req: Request, res: Response) => {
+    const taskId = req.params.taskId
+    const listId = req.params.listId
+    const userId = req.id
+    try {
+        const task = await Task.findOneAndUpdate({ _id: taskId, userId: userId }, { listId }, { new: true, upsert: true })
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Task added successfully",
+            task
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while adding task",
+            error
+        })
+    }
+}
+const getTaskByList = async (req: Request, res: Response) => {
+    const listId = req.params.id
+    const userId = req.id
+    try {
+        const tasks = await Task.find({ userId: userId, listId: listId })
+        return res.status(200).json({
+            message: "All tasks fetched successfully",
+            tasks
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while fetching all tasks",
+            error
+        })
+    }
 }
 
 // 10 tasks at each scroll, something like that
@@ -213,6 +332,7 @@ export {
     deleteTask,
     updateTask,
     getAllTask,
+    addTaskToList,
     getTaskByList,
     getPaginatedTasks
 }

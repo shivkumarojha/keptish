@@ -1,5 +1,5 @@
 import express from "express"
-import { addList, addTask, deleteList, deleteTask, getAllList, getAllTask, getPaginatedTasks, getPinnedLists, getTaskByList, pinList, unPinList, updateList, updateTask } from "../controllers/task.controller"
+import { addList, addTask, addTaskToList, deleteList, deleteTask, getAllList, getAllTask, getPaginatedTasks, getPinnedLists, getTaskByList, pinList, unPinList, updateList, updateTask } from "../controllers/task.controller"
 import authMiddleware from "../middlewares/auth.middleware"
 
 const router = express.Router()
@@ -21,10 +21,11 @@ router.get("/getPinnedLists", authMiddleware, getPinnedLists)
 
 // Task related routes
 router.post("/addTask", authMiddleware, addTask)
-router.delete("/deleteTask", authMiddleware, deleteTask)
-router.post("/updateTask", authMiddleware, updateTask)
+router.delete("/deleteTask/:id", authMiddleware, deleteTask)
+router.put("/updateTask/:id", authMiddleware, updateTask)
 router.get("/getAllTask", authMiddleware, getAllTask)
-router.get("/getTaskByList", authMiddleware, getTaskByList)
+router.post("/addTaskToList/:taskId/:listId", authMiddleware, addTaskToList)
+router.get("/getTaskByList/:id", authMiddleware, getTaskByList)
 router.get("/getPaginatedTasks", authMiddleware, getPaginatedTasks)
 
 export default router

@@ -33,13 +33,21 @@ const taskSchema = new mongoose.Schema(
             maxLength: 500
         },
         description: String,
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        listId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'List',
+        }
     },
 
     {
         timestamps: true
     }
 )
-
 
 
 export const List = mongoose.model('List', listSchema)
