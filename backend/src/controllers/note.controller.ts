@@ -1,12 +1,37 @@
 import { Request, Response } from "express";
+import { categorySchema } from "../validators/note.validator";
+import { User } from "../models/user.model";
+import { Category } from "../models/note.model";
 
 // Category related routes
-const addCategory = (req: Request, res: Response) => {
-    return res.json({
-        message: "jheloo"
-    })
-}
+const addCategory = async (req: Request, res: Response) => {
+    const userId = req.id
+    const parsedData = categorySchema.safeParse(req.body)
 
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Invalid data",
+            error: parsedData.error
+        })
+    }
+    try {
+
+        const newCategory = await Category.create({
+            categoryName: parsedData.data.categoryName,
+            userId: userId
+        })
+
+        return res.status(201).json({
+            message: "Category created"
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message: "couldn't process with the request, try after sometime",
+            error: error
+
+        })
+    }
+}
 const deleteCategory = (req: Request, res: Response) => {
 
 }
@@ -15,8 +40,8 @@ const updateCategory = (req: Request, res: Response) => {
 
 }
 
-const getAllCategory = (req: Request, res: Response) => {
-
+const getAllCategory = async (req: Request, res: Response) => {
+    
 }
 
 // Notes related route

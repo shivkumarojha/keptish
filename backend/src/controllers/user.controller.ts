@@ -19,7 +19,7 @@ const signin = async (req: Request, res: Response) => {
     // check if the user exist 
     const user = await User.findOne({
         email: email
-    }).select('email password')
+    }).select('id email password')
 
     if (!user) {
         return res.status(404).json({
@@ -36,7 +36,7 @@ const signin = async (req: Request, res: Response) => {
     }
 
     // return jwt token
-    const token = generateJwtToken(email)
+    const token = generateJwtToken(user.id, user.email)
 
     return res.status(200).json({
         message: "Logged in success.",
@@ -80,8 +80,6 @@ const signup = async (req: Request, res: Response) => {
         name: name,
     })
 
-    console.log(user)
-
     if (!user) {
         return res.status(404).json({
             message: "something went wrong while creating the user"
@@ -96,7 +94,6 @@ const signup = async (req: Request, res: Response) => {
 const changePassword = async (req: Request, res: Response) => {
     const parsedData = changePasswordSchema.safeParse(req.body)
     const email = req.email
-    console.log(email)
     if (!parsedData.success) {
         return res.status(404).json({
             message: "Inputs are invalid",

@@ -1,5 +1,6 @@
 import express from "express"
 import { addCategory, addNote, deleteCategory, deleteNote, getAllCategory, getNote, getPaginatedNotes, getPinnedNotes, pinNote, updateCategory, updateNote } from "../controllers/note.controller"
+import authMiddleware from "../middlewares/auth.middleware"
 
 const router = express.Router()
 
@@ -10,10 +11,10 @@ router.get("/", (req, res) => {
 })
 
 // Note category related routes
-router.post("/addCategory", addCategory)
+router.post("/addCategory", authMiddleware, addCategory)
 router.delete("/deleteCategory", deleteCategory)
 router.put("/updateCategory", updateCategory)
-router.get("/getAllCategory", getAllCategory)
+router.get("/getAllCategory", authMiddleware, getAllCategory)
 
 // Note related
 router.post("/addNote", addNote)

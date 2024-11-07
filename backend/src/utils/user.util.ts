@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 // Generate Jwt token
-export const generateJwtToken = (email: string): string => {
+export const generateJwtToken = (id: string, email: string): string => {
     return jwt.sign(
-        { email: email },
+        { id, email },
         process.env.JWT_SECRET_KEY as string,
         {
             expiresIn: "2d"
