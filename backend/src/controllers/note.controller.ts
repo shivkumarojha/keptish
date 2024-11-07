@@ -142,7 +142,26 @@ const addNote = async (req: Request, res: Response) => {
 }
 
 const deleteNote = async (req: Request, res: Response) => {
-    
+    const noteId = req.params.id
+    try {
+        const deletedNote = await Note.findOneAndDelete({
+            _id: noteId
+        })
+        if (!deletedNote) {
+            return res.status(404).json({
+                message: "Note not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Note deleted"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while deleting the note",
+            error: error
+        })
+    }
+
 }
 
 const updateNote = (req: Request, res: Response) => {
