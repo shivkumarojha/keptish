@@ -1,5 +1,5 @@
 import express from "express"
-import { addCategory, addNote, deleteCategory, deleteNote, getAllCategory, getNote, getPaginatedNotes, getPinnedNotes, pinNote, updateCategory, updateNote } from "../controllers/note.controller"
+import { addCategory, addNote, deleteCategory, deleteNote, getAllCategory, getNote, getPaginatedNotes, getPinnedNotes, pinNote, unpinNote, updateCategory, updateNote } from "../controllers/note.controller"
 import authMiddleware from "../middlewares/auth.middleware"
 
 const router = express.Router()
@@ -22,7 +22,8 @@ router.delete("/deleteNote/:id", authMiddleware, deleteNote)
 router.put("/updateNote/:id", authMiddleware, updateNote)
 router.get("/getNote/:id", authMiddleware, getNote)
 router.get("/getPaginatedNotes", authMiddleware, getPaginatedNotes)
-router.post("/pinNote", authMiddleware, pinNote)
+router.post("/pinNote/:id", authMiddleware, pinNote)
 router.get("/getPinnedNotes", authMiddleware, getPinnedNotes)
+router.delete("/unpinNote/:id", authMiddleware, unpinNote)
 
 export default router

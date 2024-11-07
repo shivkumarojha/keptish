@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { categorySchemaValidator, noteSchemaValidator } from "../validators/note.validator";
 import { User } from "../models/user.model";
-import { Category, Note } from "../models/note.model";
+import { Category, Note, PinnedNote } from "../models/note.model";
+import { captureRejectionSymbol } from "events";
 
 // Category related routes
 const addCategory = async (req: Request, res: Response) => {
@@ -198,11 +199,11 @@ const updateNote = async (req: Request, res: Response) => {
 
 const getNote = async (req: Request, res: Response) => {
     const noteId = req.params.id
-    try{
+    try {
         const note = await Note.findOne({
             _id: noteId
         })
-        if(!note) {
+        if (!note) {
             return res.status(404).json({
                 message: "Note not found"
             })
@@ -211,7 +212,7 @@ const getNote = async (req: Request, res: Response) => {
             message: "Notes fetched succesfully",
             note: note
         })
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Some error occured while fetching note",
             error: error
@@ -225,14 +226,81 @@ const getPaginatedNotes = (req: Request, res: Response) => {
 
 }
 
-const pinNote = (req: Request, res: Response) => {
-
+const pinNote = async (req: Request, res: Response) => {
+    const noteId = req.params.id
+    const userId = req.id
+    try {
+        const pinNote = await PinnedNote.findOneAndUpdate(
+            {
+                userId: userId,
+                noteId: noteId
+            },
+            {
+                userId,
+                noteId
+            },
+            {
+                new: true,
+                upsert: true
+            })
+        if (!pinNote) {
+            return res.status(400).json({
+                message: "note already pinned",
+            })
+        }
+        return res.status(200).json({
+            message: "Note pinned"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while pinning note",
+            error: error
+        })
+    }
 }
 
-const getPinnedNotes = (req: Request, res: Response) => {
-
+const getPinnedNotes = async (req: Request, res: Response) => {
+    const userId = req.id
+    try {
+        const pinnedNotes = await PinnedNote.find({ userId })
+        if (!pinnedNotes) {
+            return res.status(404).json({
+                message: "There is not pinned Notes",
+            })
+        }
+        return res.status(200).json({
+            message: "Pinned notes fetched",
+            pinnedNotes: pinnedNotes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while fetching pinned notes",
+            error: error
+        })
+    }
 }
 
+const unpinNote = async (req: Request, res: Response) => {
+    const noteId = req.params.id
+    try {
+        const note = await PinnedNote.findOneAndDelete({
+            noteId: noteId
+        })
+        if (!note) {
+            return res.status(404).json({
+                message: "Not pinned note.."
+            })
+        }
+        return res.status(200).json({
+            message: "Note unpinned"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong while unpinning note",
+            error: error
+        })
+    }
+}
 
 export {
     addCategory,
@@ -245,5 +313,6 @@ export {
     getNote,
     getPaginatedNotes,
     pinNote,
-    getPinnedNotes
+    getPinnedNotes,
+    unpinNote
 }
