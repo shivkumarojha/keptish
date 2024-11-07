@@ -1,18 +1,9 @@
 import { Request, Response } from "express"
 import bcrypt from 'bcrypt'
-import { z } from "zod"
 import { User } from "../models/user.model"
 import jwt from 'jsonwebtoken'
-// zod User schema
-const userSchema = z.object({
-    name: z.string(),
-    email: z.string().email(),
-    password: z.string(),
-    confirmPassword: z.string()
-})
+import { changePasswordSchema, signupUserSchema, userSchema } from "../validators/user.validator"
 
-// signup user schema
-const signupUserSchema = userSchema.pick({ email: true, password: true })
 
 const signin = async (req: Request, res: Response) => {
     const parsedData = signupUserSchema.safeParse(req.body)
@@ -60,7 +51,7 @@ const signin = async (req: Request, res: Response) => {
 const signup = async (req: Request, res: Response) => {
     const parsedData = userSchema.safeParse(req.body)
     if (!parsedData.success) {
-        return res.status(404).json({
+        return res.status(400).json({
             message: "invalid inputs",
             error: parsedData.error
         })
@@ -105,12 +96,7 @@ const signup = async (req: Request, res: Response) => {
     })
 }
 
-// schema for password change
-const changePasswordSchema = z.object({
-    oldPassword: z.string(),
-    newPassword: z.string(),
-    confirmNewPassword: z.string(),
-})
+
 const changePassword = async (req: Request, res: Response) => {
     const parsedData = changePasswordSchema.safeParse(req.body)
     const email = req.email
@@ -125,7 +111,7 @@ const changePassword = async (req: Request, res: Response) => {
     const { oldPassword, newPassword, confirmNewPassword } = parsedData.data
     // check the provided password and confirm password mathes
     if (newPassword != confirmNewPassword) {
-        return res.status(404).json({
+        return res.status(422).json({
             message: "New password doesn't matched with each other"
         })
     }
