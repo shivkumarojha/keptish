@@ -20,10 +20,6 @@ const taskSchema = new mongoose.Schema(
             maxLength: 500
         },
         description: String,
-        listId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'List'
-        }
     },
 
     {
