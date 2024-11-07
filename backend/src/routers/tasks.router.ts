@@ -1,5 +1,6 @@
 import express from "express"
 import { addList, addTask, deleteList, deleteTask, getAllList, getAllTask, getPaginatedTasks, getPinnedLists, getTaskByList, pinList, updateList, updateTask } from "../controllers/task.controller"
+import authMiddleware from "../middlewares/auth.middleware"
 
 const router = express.Router()
 
@@ -10,19 +11,19 @@ router.get("/", (req, res) => {
 })
 
 
-router.post("/addList", addList)
-router.post("/pinCategory", pinList)
-router.delete("/deleteList", deleteList)
-router.post("/updateList", updateList)
-router.get("/getAllList", getAllList)
-router.get("/getPinnedCategory", getPinnedLists)
+router.post("/addList", authMiddleware, addList)
+router.post("/pinCategory", authMiddleware, pinList)
+router.delete("/deleteList", authMiddleware, deleteList)
+router.post("/updateList", authMiddleware, updateList)
+router.get("/getAllList", authMiddleware, getAllList)
+router.get("/getPinnedCategory", authMiddleware, getPinnedLists)
 
 // Task related routes
-router.post("/addTask", addTask)
-router.delete("/deleteTask", deleteTask)
-router.post("/updateTask", updateTask)
-router.get("/getAllTask", getAllTask)
-router.get("/getTaskByList", getTaskByList)
-router.get("/getPaginatedTasks", getPaginatedTasks)
+router.post("/addTask", authMiddleware, addTask)
+router.delete("/deleteTask", authMiddleware, deleteTask)
+router.post("/updateTask", authMiddleware, updateTask)
+router.get("/getAllTask", authMiddleware, getAllTask)
+router.get("/getTaskByList", authMiddleware, getTaskByList)
+router.get("/getPaginatedTasks", authMiddleware, getPaginatedTasks)
 
 export default router
