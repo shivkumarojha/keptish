@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
-import bcrypt from 'bcrypt'
 import { User } from "../models/user.model"
-import jwt from 'jsonwebtoken'
 import { changePasswordSchema, signupUserSchema, userSchema } from "../validators/user.validator"
+import { generateJwtToken, hashPassword, verifyPassword } from "../utils/user.util"
 
 
 const signin = async (req: Request, res: Response) => {
@@ -29,18 +28,15 @@ const signin = async (req: Request, res: Response) => {
     }
 
     // Check password
-    const matched = await bcrypt.compare(password, user.password)
+    const matched = await verifyPassword(password, user.password)
     if (!matched) {
         return res.status(401).json({
             message: "Unauthorized, password didn't matched"
         })
     }
 
-    const jwtPayload = {
-        email: user.email
-    }
     // return jwt token
-    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY as string)
+    const token = generateJwtToken(email)
 
     return res.status(200).json({
         message: "Logged in success.",
@@ -75,7 +71,7 @@ const signup = async (req: Request, res: Response) => {
     }
 
     // hash the password
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await hashPassword(password)
 
     // save the user in the db
     const user = await User.create({
@@ -112,7 +108,7 @@ const changePassword = async (req: Request, res: Response) => {
     // check the provided password and confirm password mathes
     if (newPassword != confirmNewPassword) {
         return res.status(422).json({
-            message: "New password doesn't matched with each other"
+            message: "New password and Confirm  password doesn't matched"
         })
     }
 
@@ -125,14 +121,14 @@ const changePassword = async (req: Request, res: Response) => {
             message: "user doesn't exist"
         })
     }
-    const matched = await bcrypt.compare(oldPassword, user.password)
+    const matched = await verifyPassword(oldPassword, user.password)
     if (!matched) {
         return res.status(401).json({
             message: "Unauthorized, Old Password didn't match"
         })
     }
     // hash the password
-    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    const hashedPassword = await hashPassword(newPassword)
 
     // update the password
     const updateUser = await User.findOneAndUpdate(
