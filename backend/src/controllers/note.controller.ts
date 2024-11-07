@@ -55,8 +55,36 @@ const deleteCategory = async (req: Request, res: Response) => {
 
 }
 
-const updateCategory = (req: Request, res: Response) => {
-
+const updateCategory = async (req: Request, res: Response) => {
+    const categoryId = req.params.id
+    const categoryName = categorySchema.safeParse(req.body)
+    try {
+        const updateCategory = await Category.findOneAndUpdate(
+            {
+                _id: categoryId
+            },
+            {
+                categoryName: categoryName
+            },
+            {
+                new: true
+            }
+            
+        )
+        if(!updateCategory) {
+            return res.status(400).json({
+                message: "Category doesn't exists"
+            })
+        }
+        return res.status(200).json({
+            message: "Category updated."
+        })
+    } catch(error) {
+        return res.status(404).json({
+            message: "Some error occured while updating the category",
+            error: error
+        })
+    }
 }
 
 const getAllCategory = async (req: Request, res: Response) => {

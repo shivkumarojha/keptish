@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 // Note category related routes
 router.post("/addCategory", authMiddleware, addCategory)
 router.delete("/deleteCategory/:id", authMiddleware, deleteCategory)
-router.put("/updateCategory", updateCategory)
+router.put("/updateCategory/:id", authMiddleware, updateCategory)
 router.get("/getAllCategory", authMiddleware, getAllCategory)
 
 // Note related
