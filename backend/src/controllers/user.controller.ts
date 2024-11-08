@@ -9,7 +9,7 @@ const signin = async (req: Request, res: Response) => {
 
     // validate user 
     if (!parsedData.success) {
-        return res.status(411).json({
+        return res.status(400).json({
             message: "Invalid inputs"
         })
     }
