@@ -1,6 +1,6 @@
 import "dotenv/config"
 import express from "express"
-
+import cors from "cors"
 // Importing routers
 import userRouter from "./routers/users.router"
 import taskRouter from "./routers/tasks.router"
@@ -10,6 +10,8 @@ import journalRouter from "./routers/journal.router"
 import connectDb from "./db"
 const app = express()
 
+// allow cors
+app.use(cors())
 
 // parse body middleware
 app.use(express.json())
