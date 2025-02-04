@@ -15,3 +15,12 @@ app.get("/health", (req, res) => {
 
 
 app.listen(process.env.PORT)
+/* 
+* Authentication and Signup
+* CRUD Tasks
+* CRUD Notes
+* CRUD Journaling
+* CRUD LINKS
+* Calendar
+* POMODORO like Flip clock
+ */
