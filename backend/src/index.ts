@@ -5,6 +5,7 @@ import calenderRouter from './routes/calender.routes'
 import journalRouter from './routes/journal.routes'
 import linkRouter from './routes/links.routes'
 import notesRouter from './routes/notes.routes'
+import pomodoroRouter from './routes/pomodoro.routes'
 
 // Initializing express app
 const app = express()
@@ -22,6 +23,7 @@ app.use("/calender", calenderRouter)
 app.use("/journal", journalRouter)
 app.use("/links", linkRouter)
 app.use("/notes", notesRouter)
+app.use("/pomodoro", pomodoroRouter)
 
 // Initiate the server
 app.listen(process.env.PORT, () => {
