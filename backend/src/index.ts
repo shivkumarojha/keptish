@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from "express"
 import authRouter from './routes/auth.routes'
+import calenderRouter from './routes/calender.routes'
 // Initializing express app
 const app = express()
 
@@ -10,9 +11,13 @@ app.get("/health", (req, res) => {
         message: "Ok"
     })
 })
+
+// Routers
 app.use("/auth", authRouter)
+app.use("/calender", calenderRouter)
+// Initiate the server
 app.listen(process.env.PORT, () => {
-    console.log("Server is runnig at port", process.env.PORT)
+    console.log("Server is running at port", process.env.PORT)
 })
 
 /* Authentication and Signup
