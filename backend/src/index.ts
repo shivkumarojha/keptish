@@ -1,10 +1,8 @@
 import 'dotenv/config'
 import express from "express"
-
-
+import authRouter from './routes/auth.routes'
 // Initializing express app
 const app = express()
-
 
 // Health route
 app.get("/health", (req, res) => {
@@ -12,11 +10,12 @@ app.get("/health", (req, res) => {
         message: "Ok"
     })
 })
+app.use("/auth", authRouter)
+app.listen(process.env.PORT, () => {
+    console.log("Server is runnig at port", process.env.PORT)
+})
 
-
-app.listen(process.env.PORT)
-/* 
-* Authentication and Signup
+/* Authentication and Signup
 * CRUD Tasks
 * CRUD Notes
 * CRUD Journaling
