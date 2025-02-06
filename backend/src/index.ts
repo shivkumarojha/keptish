@@ -6,7 +6,7 @@ import journalRouter from './routes/journal.routes'
 import linkRouter from './routes/links.routes'
 import notesRouter from './routes/notes.routes'
 import pomodoroRouter from './routes/pomodoro.routes'
-
+import tasksRouter from './routes/tasks.routes'
 // Initializing express app
 const app = express()
 
@@ -24,7 +24,7 @@ app.use("/journal", journalRouter)
 app.use("/links", linkRouter)
 app.use("/notes", notesRouter)
 app.use("/pomodoro", pomodoroRouter)
-
+app.use("/tasks", tasksRouter)
 // Initiate the server
 app.listen(process.env.PORT, () => {
     console.log("Server is running at port", process.env.PORT)
