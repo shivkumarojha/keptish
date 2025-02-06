@@ -3,6 +3,7 @@ import express from "express"
 import authRouter from './routes/auth.routes'
 import calenderRouter from './routes/calender.routes'
 import journalRouter from './routes/journal.routes'
+import linkRouter from './routes/links.routes'
 
 // Initializing express app
 const app = express()
@@ -18,6 +19,7 @@ app.get("/health", (req, res) => {
 app.use("/auth", authRouter)
 app.use("/calender", calenderRouter)
 app.use("/journal", journalRouter)
+app.use("/links", linkRouter)
 
 // Initiate the server
 app.listen(process.env.PORT, () => {
