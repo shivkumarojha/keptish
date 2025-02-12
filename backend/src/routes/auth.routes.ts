@@ -4,6 +4,6 @@ import { singin } from "../controllers/auth.cotroller"
 const router = express.Router()
 
 
-router.get("/signin", singin)
+router.post("/signin", singin)
 
 export default router

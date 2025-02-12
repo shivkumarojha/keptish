@@ -7,6 +7,7 @@ import linkRouter from './routes/links.routes'
 import notesRouter from './routes/notes.routes'
 import pomodoroRouter from './routes/pomodoro.routes'
 import tasksRouter from './routes/tasks.routes'
+
 // Initializing express app
 const app = express()
 
