@@ -115,9 +115,6 @@ async function singin(req: Request, res: Response) {
         })
     }
 
-    res.status(200).json({
-        message: "Signin route"
-    })
 }
 // forget password controller
 function changePassword(req: Request, res: Response) {
