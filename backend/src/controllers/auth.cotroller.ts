@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { z } from "zod"
 import prisma from "../db"
 import bcrypt from "bcrypt"
-
+import jwt from "jsonwebtoken"
 const UserSignupSchema = z.object({
     name: z.string(),
     email: z.string().email(),
@@ -62,8 +62,59 @@ async function signup(req: Request, res: Response) {
 
 }
 
+const SignInSchema = UserSignupSchema.omit({ name: true })
 // Signin Controller
-function singin(req: Request, res: Response) {
+async function singin(req: Request, res: Response) {
+    const parsedData = SignInSchema.safeParse(req.body)
+
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Incorrect inputs",
+            error: parsedData.error
+        })
+    }
+
+    const { email, password } = parsedData.data
+    // checking if the user exist in db
+    try {
+        const isUser = await prisma.user.findUnique({
+            where: { email },
+            select: { password: true, id: true }
+        })
+        if (!isUser) {
+            return res.status(400).json({
+                message: "User Doesn't Exist!"
+            })
+        }
+
+
+        // compare hashed password
+        const isPasswordMatched = await bcrypt.compare(password, isUser.password)
+        if (!isPasswordMatched) {
+            return res.status(401).json({
+                message: "Password doesn't match!"
+            })
+        }
+
+        // return jwt token if password matched
+        const token = jwt.sign(
+            {
+                email,
+                id: isUser.id
+            },
+            process.env.JWT_SECRET as string
+        )
+
+        return res.status(200).json({
+            message: "Log in Successfull",
+            token: token
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "something went wrong"
+        })
+    }
+
     res.status(200).json({
         message: "Signin route"
     })
