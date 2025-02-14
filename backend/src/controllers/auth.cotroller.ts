@@ -50,8 +50,10 @@ async function signup(req: Request, res: Response) {
                 password: hashedPassword
             }
         })
+
+        // TODO: send verification email
         return res.status(201).json({
-            message: "User created"
+            message: "Sign up successfull, Please verify your email.Check your email"
         })
     } catch (error) {
         return res.status(500).json({
@@ -77,19 +79,27 @@ async function singin(req: Request, res: Response) {
     const { email, password } = parsedData.data
     // checking if the user exist in db
     try {
-        const isUser = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: { email },
-            select: { password: true, id: true }
+            select: {
+                password: true,
+                id: true,
+                isEmailVerified: true
+            }
         })
-        if (!isUser) {
+        if (!user) {
             return res.status(400).json({
                 message: "User Doesn't Exist!"
             })
         }
-
+        if (!user.isEmailVerified) {
+            return res.status(401).json({
+                message: "Email not verified, please verify. Check your email"
+            })
+        }
 
         // compare hashed password
-        const isPasswordMatched = await bcrypt.compare(password, isUser.password)
+        const isPasswordMatched = await bcrypt.compare(password, user.password)
         if (!isPasswordMatched) {
             return res.status(401).json({
                 message: "Password doesn't match!"
@@ -100,7 +110,7 @@ async function singin(req: Request, res: Response) {
         const token = jwt.sign(
             {
                 email,
-                id: isUser.id
+                id: user.id
             },
             process.env.JWT_SECRET as string
         )
